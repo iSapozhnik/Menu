@@ -43,13 +43,20 @@ public final class Menu {
         fadeIn(window)
     }
 
-    public func dismiss() {
+    public func dismiss(animated: Bool) {
+        let actualDismiss: (NSWindow) -> Void = { [weak self] menuWindow in
+            self?.window?.parent?.removeChildWindow(menuWindow)
+            self?.window?.orderOut(self)
+            self?.window?.close()
+            self?.window = nil
+        }
         if let menuWindow = window {
-            fadeOut(window: menuWindow) { [weak self] in
-                self?.window?.parent?.removeChildWindow(menuWindow)
-                self?.window?.orderOut(self)
-                self?.window?.close()
-                self?.window = nil
+            if animated {
+                fadeOut(window: menuWindow) {
+                    actualDismiss(menuWindow)
+                }
+            } else {
+                actualDismiss(menuWindow)
             }
         }
 
@@ -84,7 +91,7 @@ public final class Menu {
 
     private func setupMonitors(for parentWindow: NSWindow, targetView: NSView) {
         lostFocusObserver = NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: parentWindow, queue: nil, using: { [weak self] (_ arg1: Notification) -> Void in
-            self?.dismiss()
+            self?.dismiss(animated: false)
         })
 
         localMonitor = EventMonitor(monitorType: .local, mask: [.leftMouseDown, .rightMouseDown, .otherMouseDown], globalHandler: nil, localHandler: { [weak self] event -> NSEvent? in
@@ -92,7 +99,7 @@ public final class Menu {
 
             if localEvent.window != self?.window {
                 if localEvent.window == parentWindow {
-                    self?.dismiss()
+                    self?.dismiss(animated: true)
 //                    Ignore clicking on presenting view
 //                    let contentView = parentWindow.contentView
 //                    let locationTest = contentView?.convert(localEvent.locationInWindow, from: nil)
@@ -122,6 +129,6 @@ public final class Menu {
 extension Menu: ContentViewControllerDelegate {
     func didClickMenuElement(with index: Int) {
         selectedIndex = index
-        dismiss()
+        dismiss(animated: true)
     }
 }
