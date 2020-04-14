@@ -112,8 +112,9 @@ public final class Menu {
 
         let presentationFrame = presentationWindow.convertToScreen(view.frame)
         let presentationPoint = presentationFrame.origin
+        let additionalYOffset = configuration.appearsBelowSender ? 0 : NSHeight(view.frame)
 
-        let newFrame = NSRect(x: presentationPoint.x, y: presentationPoint.y - NSHeight(window.frame), width: NSWidth(view.frame), height: NSHeight(window.frame))
+        let newFrame = NSRect(x: presentationPoint.x, y: presentationPoint.y - NSHeight(window.frame) + additionalYOffset, width: NSWidth(view.frame), height: NSHeight(window.frame))
         window.setFrame(newFrame, display: true, animate: false)
     }
 }

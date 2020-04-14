@@ -42,6 +42,7 @@ public protocol Configuration {
     var backgroundColor: NSColor                            { get }
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
+    var appearsBelowSender: Bool                            { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var separatorColor: NSColor                             { get }
     var separatorThickness: CGFloat                         { get }
@@ -84,6 +85,10 @@ open class MenuConfiguration: Configuration {
     }
 
     open var hasShadow: Bool {
+        return true
+    }
+
+    open var appearsBelowSender: Bool {
         return true
     }
 
