@@ -14,13 +14,13 @@ public enum Alignment {
 
 public enum Padding {
     public struct Horizontal {
-        let left: CGFloat
-        let right: CGFloat
+        public let left: CGFloat
+        public let right: CGFloat
     }
 
     public struct Vertical {
-        let top: CGFloat
-        let bottom: CGFloat
+        public let top: CGFloat
+        public let bottom: CGFloat
     }
 }
 
