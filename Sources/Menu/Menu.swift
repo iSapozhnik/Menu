@@ -47,7 +47,6 @@ public final class Menu {
         let actualDismiss: (NSWindow) -> Void = { [weak self] menuWindow in
             self?.window?.parent?.removeChildWindow(menuWindow)
             self?.window?.orderOut(self)
-            self?.window?.close()
             self?.window = nil
         }
         if let menuWindow = window {

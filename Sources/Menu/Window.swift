@@ -7,7 +7,7 @@
 
 import Cocoa
 
-final class Window: NSPanel {
+final class Window: NSWindow {
     private var childContentView: NSView?
     private var backgroundView: RoundedRectangleView?
     private let configuration: Configuration
