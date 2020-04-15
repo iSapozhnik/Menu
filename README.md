@@ -43,7 +43,7 @@ import Cocoa
 import Menu
 
 class ViewController: NSViewController {
-    private let myMenu = Menu(with: "Select search engine:")
+    private let myMenu = Menu(with: "Select a search engine:")
 
     @IBAction func didClickedButton(_ sender: NSButton) {
         myMenu.show(items: [
