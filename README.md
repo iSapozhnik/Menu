@@ -4,6 +4,12 @@ Fully customizable Mac OS drop-down menu
 
 ![](screenshot.png)
 
+## Requirements
+
+* Xcode 11+
+* Mac OS 10.12+
+* Swift 5.0 and higher
+
 ## What can be customized? Everything!
 ```swift
 public protocol Configuration {
