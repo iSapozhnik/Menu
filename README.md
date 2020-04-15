@@ -2,16 +2,17 @@
 
 Fully customizable Mac OS drop-down menu
 
-![](menu_screenshot.png)
+![](screenshot.png)
 
 ## What can be customized? Everything!
 ```swift
 public protocol Configuration {
-    var titlePadding: Padding.Vertical                      { get }
+    var titleBottomSpace: CGFloat                           { get }
     var titleFont: NSFont?                                  { get }
     var backgroundColor: NSColor                            { get }
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
+    var appearsBelowSender: Bool                            { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var separatorColor: NSColor                             { get }
     var separatorThickness: CGFloat                         { get }

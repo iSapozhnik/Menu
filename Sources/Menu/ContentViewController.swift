@@ -57,7 +57,7 @@ class ContentViewController: NSViewController {
             NSLayoutConstraint.activate([
                 label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: configuration.contentEdgeInsets.left),
                 label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -configuration.contentEdgeInsets.right),
-                label.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.titlePadding.top),
+                label.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.contentEdgeInsets.top)
             ])
         }
 
@@ -67,13 +67,13 @@ class ContentViewController: NSViewController {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -configuration.contentEdgeInsets.bottom)
         ])
 
         if let titleLabel = titleLabel {
-            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: configuration.titlePadding.bottom).isActive = true
+            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: configuration.titleBottomSpace).isActive = true
         } else {
-            stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.contentEdgeInsets.top).isActive = true
         }
 
         menuItems.enumerated().forEach { index, item in

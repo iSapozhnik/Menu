@@ -47,7 +47,7 @@ extension Padding.Vertical {
 }
 
 public protocol Configuration {
-    var titlePadding: Padding.Vertical                      { get }
+    var titleBottomSpace: CGFloat                           { get }
     var titleFont: NSFont?                                  { get }
     var backgroundColor: NSColor                            { get }
     var cornerRadius: CGFloat                               { get }
@@ -78,8 +78,8 @@ public protocol Configuration {
 open class MenuConfiguration: Configuration {
     public init() {}
 
-    open var titlePadding: Padding.Vertical {
-        return .init(top: .grid1, bottom: .grid1)
+    open var titleBottomSpace: CGFloat {
+        return .grid1
     }
 
     open var titleFont: NSFont? {
