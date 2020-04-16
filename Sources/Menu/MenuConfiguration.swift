@@ -49,11 +49,13 @@ extension Padding.Vertical {
 public protocol Configuration {
     var titleBottomSpace: CGFloat                           { get }
     var titleFont: NSFont?                                  { get }
+    var titleColor: NSColor                                 { get }
     var backgroundColor: NSColor                            { get }
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
+    var maximumContentHeight: CGFloat?                      { get }
     var separatorColor: NSColor                             { get }
     var separatorThickness: CGFloat                         { get }
     var separatorHorizontalPadding: Padding.Horizontal      { get }
@@ -86,6 +88,10 @@ open class MenuConfiguration: Configuration {
         return NSFont.systemFont(ofSize: 18, weight: .light)
     }
 
+    open var titleColor: NSColor {
+        return NSColor.white
+    }
+
     open var backgroundColor: NSColor {
         return NSColor.init(calibratedRed: 84/255, green: 181/255, blue: 146/255, alpha: 1.0)
     }
@@ -104,6 +110,10 @@ open class MenuConfiguration: Configuration {
 
     open var contentEdgeInsets: NSEdgeInsets {
         return NSEdgeInsets(top: .grid2, left: .grid2, bottom: .grid2, right: .grid2)
+    }
+
+    open var maximumContentHeight: CGFloat? {
+        return nil
     }
 
     open var separatorColor: NSColor {

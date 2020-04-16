@@ -11,6 +11,32 @@ protocol ContentViewControllerDelegate: AnyObject {
     func didClickMenuElement(with index: Int)
 }
 
+final class FlippedClipView: NSClipView {
+    override var isFlipped: Bool {
+        return true
+    }
+}
+
+//final class MenuScroller: NSScroller {
+//    override init(frame frameRect: NSRect) {
+//        super.init(frame: frameRect)
+//        scrollerStyle = .overlay
+//        knobStyle = .light
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//
+//    override class func scrollerWidth(for controlSize: NSControl.ControlSize, scrollerStyle: NSScroller.Style) -> CGFloat {
+//        return 30.0
+//    }
+//
+//    override var usableParts: NSScroller.UsableParts {
+//        return .noScrollerParts
+//    }
+//}
+
 class ContentViewController: NSViewController {
     weak var delegate: ContentViewControllerDelegate?
 
@@ -27,6 +53,19 @@ class ContentViewController: NSViewController {
         stackView.distribution = .equalSpacing
         stackView.spacing = 0.0
         return stackView
+    }()
+
+    private let clipView: FlippedClipView = {
+        let clipView = FlippedClipView()
+        clipView.drawsBackground = false
+        return clipView
+    }()
+
+    private let scrollView: NSScrollView = {
+        let scrollView = NSScrollView()
+        scrollView.verticalScroller = MenuScroller(frame: .zero)
+        scrollView.drawsBackground = false
+        return scrollView
     }()
 
     init(with titleString: String?, menuItems: [MenuItem], selectedIndex: Int, configuration: Configuration) {
@@ -61,19 +100,36 @@ class ContentViewController: NSViewController {
             ])
         }
 
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
+        scrollView.contentView = clipView
+        scrollView.documentView = stackView
 
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -configuration.contentEdgeInsets.bottom)
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -configuration.contentEdgeInsets.bottom),
+//            scrollView.heightAnchor.constraint(equalToConstant: 200),
+
+            stackView.leadingAnchor.constraint(equalTo: clipView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: clipView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: clipView.topAnchor),
+            stackView.widthAnchor.constraint(equalTo: clipView.widthAnchor),
         ])
 
-        if let titleLabel = titleLabel {
-            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: configuration.titleBottomSpace).isActive = true
+        scrollView.hasVerticalScroller = configuration.maximumContentHeight != nil
+        if let maxContentHeight = configuration.maximumContentHeight {
+            scrollView.heightAnchor.constraint(equalToConstant: abs(maxContentHeight)).isActive = true
         } else {
-            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.contentEdgeInsets.top).isActive = true
+            stackView.bottomAnchor.constraint(equalTo: clipView.bottomAnchor).isActive = true
+        }
+
+        if let titleLabel = titleLabel {
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: configuration.titleBottomSpace).isActive = true
+        } else {
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.contentEdgeInsets.top).isActive = true
         }
 
         menuItems.enumerated().forEach { index, item in
@@ -141,7 +197,7 @@ class ContentViewController: NSViewController {
         label.isEditable = false
         label.isBordered = false
         label.font = configuration.titleFont
-        label.textColor = configuration.menuItemTextColor
+        label.textColor = configuration.titleColor
         switch configuration.textAlignment {
         case .left:
             label.alignment = .left

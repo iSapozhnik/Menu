@@ -144,8 +144,7 @@ class MenuElement: NSView {
         rImageView.translatesAutoresizingMaskIntoConstraints = false
         rImageView.image = image
         if #available(OSX 10.14, *) {
-            if let menuItemImageTintColor = configuration.menuItemImageTintColor {
-                assert(image?.isTemplate ?? true, "In order to set an image tint color, the image should have template rendering mode")
+            if let menuItemImageTintColor = configuration.menuItemImageTintColor, let image = image, image.isTemplate {
                 rImageView.contentTintColor = menuItemImageTintColor
             }
         }
@@ -159,8 +158,7 @@ class MenuElement: NSView {
         lImageView.imageScaling = .scaleProportionallyUpOrDown
         lImageView.image = image
         if #available(OSX 10.14, *) {
-            if let menuItemImageTintColor = configuration.menuItemImageTintColor {
-                assert(image?.isTemplate ?? true, "In order to set an image tint color, the image should have template rendering mode")
+            if let menuItemImageTintColor = configuration.menuItemImageTintColor, let image = image, image.isTemplate {
                 lImageView.contentTintColor = menuItemImageTintColor
             }
         }
