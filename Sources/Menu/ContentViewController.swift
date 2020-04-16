@@ -61,8 +61,8 @@ class ContentViewController: NSViewController {
         return clipView
     }()
 
-    private let scrollView: NSScrollView = {
-        let scrollView = NSScrollView()
+    private let scrollView: ScrollView = {
+        let scrollView = ScrollView()
         scrollView.verticalScroller = MenuScroller(frame: .zero)
         scrollView.drawsBackground = false
         return scrollView
@@ -100,12 +100,13 @@ class ContentViewController: NSViewController {
             ])
         }
 
+        scrollView.isScrollingEnabled = configuration.maximumContentHeight != nil
+        scrollView.contentView = clipView
+        scrollView.documentView = stackView
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.contentView = clipView
-        scrollView.documentView = stackView
 
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -170,6 +171,7 @@ class ContentViewController: NSViewController {
             text: menuItem.title,
             image: menuItem.image,
             isSelected: isSelected,
+            isEnabled: menuItem.isEnabled,
             configuration: configuration,
             action: menuItem.action ?? {}
         )

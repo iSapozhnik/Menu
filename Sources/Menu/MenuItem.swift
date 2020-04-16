@@ -8,6 +8,8 @@
 import Cocoa
 
 public struct MenuItem: CustomDebugStringConvertible {
+    public var isEnabled = true
+
     let action: (() -> Void)?
     let title: String
     let image: NSImage?

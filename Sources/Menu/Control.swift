@@ -36,6 +36,7 @@ class Control: NSControl {
     }
 
     override func mouseUp(with event: NSEvent) {
+        guard isEnabled else { return }
         if let action = action {
             hoverLayer.fillColor = .clear
             hover?(false)
@@ -47,11 +48,13 @@ class Control: NSControl {
     }
 
     override func mouseEntered(with event: NSEvent) {
+        guard isEnabled else { return }
         hoverLayer.fillColor = configuratuon.menuItemHoverBackgroundColor.cgColor
         hover?(true)
     }
 
     override func mouseExited(with event: NSEvent) {
+        guard isEnabled else { return }
         hoverLayer.fillColor = .clear
         hover?(false)
     }

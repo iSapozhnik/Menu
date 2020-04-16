@@ -42,6 +42,7 @@ public final class Menu {
             self?.window?.parent?.removeChildWindow(menuWindow)
             self?.window?.orderOut(self)
             self?.window = nil
+            self?.stopMonitors()
         }
         if let menuWindow = window {
             if animated {
@@ -51,14 +52,6 @@ public final class Menu {
             } else {
                 actualDismiss(menuWindow)
             }
-        }
-
-        localMonitor?.stop()
-        localMonitor = nil
-
-        if let lostFocusObserver = lostFocusObserver {
-            NotificationCenter.default.removeObserver(lostFocusObserver)
-            self.lostFocusObserver = nil
         }
     }
 
@@ -103,6 +96,23 @@ public final class Menu {
 
     public func item(withTitle title: String) -> MenuItem? {
         items.first { $0.title == title }
+    }
+
+    // MARK: - Disabling&Enabling
+    public func disableAllItems() {
+        items = items.map { oldItem in
+            var newItem = oldItem
+            newItem.isEnabled = false
+            return newItem
+        }
+    }
+
+    public func enableAllItems() {
+        items = items.map { oldItem in
+            var newItem = oldItem
+            newItem.isEnabled = true
+            return newItem
+        }
     }
 
     // MARK: - Private
@@ -167,6 +177,16 @@ public final class Menu {
             return localEvent
         })
         localMonitor?.start()
+    }
+
+    private func stopMonitors() {
+        localMonitor?.stop()
+        localMonitor = nil
+
+        if let lostFocusObserver = lostFocusObserver {
+            NotificationCenter.default.removeObserver(lostFocusObserver)
+            self.lostFocusObserver = nil
+        }
     }
 
     private func makeWindow(with title: String?, menuItems: [MenuItem], attachedTo parentWindow: NSWindow, relativeTo targetView: NSView) -> Window {
