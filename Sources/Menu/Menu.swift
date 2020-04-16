@@ -9,38 +9,32 @@ import Cocoa
 import EventMonitor
 
 public final class Menu {
+    public private(set) var items: [MenuItem]
+    public var numberOfItems: Int {
+        return items.count
+    }
+
     private var window: Window?
     private var lostFocusObserver: Any?
     private var localMonitor: EventMonitor?
     private let configuration: Configuration
-    private var selectedIndex: Int = .defaultSelectedIndex
+    private var selectedId: UUID?
     private let title: String?
+    private weak var targetView: NSView?
 
     public convenience init() {
         self.init(with: nil)
     }
 
-    public init(with title: String?, configuration: Configuration = MenuConfiguration()) {
+    public init(with title: String?, items: [MenuItem] = [MenuItem](), configuration: Configuration = MenuConfiguration()) {
         self.title = title
+        self.items = items
         self.configuration = configuration
     }
 
-    public func show(items: [MenuItem], view: NSView) {
-        guard window == nil, let parentWindow = view.window else { return }
-
-        let contentViewController = ContentViewController(with: title, menuItems: items, selectedIndex: selectedIndex, configuration: configuration)
-        contentViewController.delegate = self
-
-        let window = Window.make(with: configuration)
-        window.contentViewController = contentViewController
-        view.window?.addChildWindow(window, ordered: .above)
-
-        self.window = window
-        setPositionRelativeTo(view)
-
-        setupMonitors(for: parentWindow, targetView: view)
-
-        fadeIn(window)
+    // MARK: - Show and dismiss
+    public func show(from view: NSView) {
+        show(items, from: view)
     }
 
     public func dismiss(animated: Bool) {
@@ -66,6 +60,68 @@ public final class Menu {
             NotificationCenter.default.removeObserver(lostFocusObserver)
             self.lostFocusObserver = nil
         }
+    }
+
+    // MARK: - Adding and Removing Menu Items
+    public func insertItem(_ item: MenuItem, at index: Int) {
+        items.insert(item, at: index)
+    }
+
+    public func addItem(_ item: MenuItem) {
+        items.append(item)
+    }
+
+    public func addItems(_ items: [MenuItem]) {
+        self.items.append(contentsOf: items)
+    }
+
+    public func removeItem(at index: Int) {
+        guard items.indices.contains(index) else { return }
+        let deletedItem = items.remove(at: index)
+        if deletedItem.id == selectedId {
+            selectedId = nil
+        }
+    }
+
+    public func removeItem(_ item: MenuItem) {
+        items.removeAll { $0.id == item.id }
+        if item.id == selectedId {
+            selectedId = nil
+        }
+    }
+
+    public func removeAllItems() {
+        items.removeAll()
+        selectedId = nil
+    }
+
+    // MARK: - Finding Menu Items
+    public func item(at index: Int) -> MenuItem? {
+        guard items.indices.contains(index) else { return nil }
+        return items[index]
+    }
+
+    public func item(withTitle title: String) -> MenuItem? {
+        items.first { $0.title == title }
+    }
+
+    // MARK: - Private
+    private func show(_ items: [MenuItem], from view: NSView) {
+        guard window == nil, let parentWindow = view.window else { return }
+
+        self.items = items
+
+        let menuWindow = makeWindow(
+            with: title,
+            menuItems: items,
+            attachedTo: parentWindow,
+            relativeTo: view
+        )
+        self.window = menuWindow
+
+        setupMonitors(for: parentWindow, targetView: view)
+
+        fadeIn(menuWindow)
     }
 
     private func fadeIn(_ window: NSWindow) {
@@ -113,10 +169,23 @@ public final class Menu {
         localMonitor?.start()
     }
 
-    private func setPositionRelativeTo(_ view: NSView) {
-        guard let presentationWindow = view.window, let window = self.window else { return }
+    private func makeWindow(with title: String?, menuItems: [MenuItem], attachedTo parentWindow: NSWindow, relativeTo targetView: NSView) -> Window {
+        let contentViewController = ContentViewController(with: title, menuItems: menuItems, selectedId: selectedId, configuration: configuration)
+        contentViewController.delegate = self
 
-        let presentationFrame = presentationWindow.convertToScreen(view.frame)
+        let window = Window.make(with: configuration)
+        window.contentViewController = contentViewController
+        parentWindow.addChildWindow(window, ordered: .above)
+
+        setFrame(for: window, relativeTo: targetView)
+
+        return window
+    }
+
+    private func setFrame(for window: NSWindow, relativeTo view: NSView) {
+        guard let parentWindow = view.window else { return }
+
+        let presentationFrame = parentWindow.convertToScreen(view.frame)
         let presentationPoint = presentationFrame.origin
         let additionalYOffset = configuration.appearsBelowSender ? 0 : NSHeight(view.frame)
 
@@ -126,8 +195,8 @@ public final class Menu {
 }
 
 extension Menu: ContentViewControllerDelegate {
-    func didClickMenuElement(with index: Int) {
-        selectedIndex = index
+    func didClickMenuItem(with id: UUID) {
+        selectedId = id
         dismiss(animated: true)
     }
 }

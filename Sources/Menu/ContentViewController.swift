@@ -8,7 +8,7 @@
 import Cocoa
 
 protocol ContentViewControllerDelegate: AnyObject {
-    func didClickMenuElement(with index: Int)
+    func didClickMenuItem(with id: UUID)
 }
 
 final class FlippedClipView: NSClipView {
@@ -45,7 +45,7 @@ class ContentViewController: NSViewController {
     private let configuration: Configuration
 
     private var menuElements = [NSView]()
-    private var slectedIndex: Int = .defaultSelectedIndex
+    private let selectedId: UUID?
 
     private let stackView: NSStackView = {
         let stackView = NSStackView()
@@ -68,10 +68,10 @@ class ContentViewController: NSViewController {
         return scrollView
     }()
 
-    init(with titleString: String?, menuItems: [MenuItem], selectedIndex: Int, configuration: Configuration) {
+    init(with titleString: String?, menuItems: [MenuItem], selectedId: UUID?, configuration: Configuration) {
         self.titleString = titleString
         self.menuItems = menuItems
-        self.slectedIndex = selectedIndex
+        self.selectedId = selectedId
         self.configuration = configuration
         super.init(nibName: nil, bundle: nil)
     }
@@ -136,7 +136,7 @@ class ContentViewController: NSViewController {
             if item.isSeparator {
                 addSeparator()
             } else {
-                addMenuElement(with: item, isSelected: index == slectedIndex)
+                addMenuElement(with: item, isSelected: item.id == selectedId)
             }
         }
     }
@@ -171,7 +171,7 @@ class ContentViewController: NSViewController {
             image: menuItem.image,
             isSelected: isSelected,
             configuration: configuration,
-            action: menuItem.action
+            action: menuItem.action ?? {}
         )
         menuElement.translatesAutoresizingMaskIntoConstraints = false
         menuElement.delegate = self
@@ -210,8 +210,9 @@ class ContentViewController: NSViewController {
 
 extension ContentViewController: MenuElementDelegate {
     func didClickMenuElement(_ menuElement: MenuElement) {
-        let index = menuElements.firstIndex(of: menuElement)
-        slectedIndex = index ?? .defaultSelectedIndex
-        delegate?.didClickMenuElement(with: slectedIndex)
+        guard let index = menuElements.firstIndex(of: menuElement) else { return }
+        guard index <= menuItems.count - 1 else { return }
+        let selectedMenuItem = menuItems[index]
+        delegate?.didClickMenuItem(with: selectedMenuItem.id)
     }
 }
