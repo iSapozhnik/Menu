@@ -54,6 +54,7 @@ public protocol Configuration {
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var maximumContentHeight: CGFloat?                      { get }
     var separatorColor: NSColor                             { get }
@@ -75,6 +76,7 @@ public protocol Configuration {
     var menuItemImageHeight: CGFloat?                       { get }
     var menuItemImageTintColor: NSColor?                    { get }
     var menuItemHoverImageTintColor: NSColor?               { get }
+    var menuItemHoverAnimationDuration: TimeInterval        { get }
 }
 
 open class MenuConfiguration: Configuration {
@@ -106,6 +108,10 @@ open class MenuConfiguration: Configuration {
 
     open var appearsBelowSender: Bool {
         return true
+    }
+
+    open var animationDuration: TimeInterval {
+        return 0.15
     }
 
     open var contentEdgeInsets: NSEdgeInsets {
@@ -190,5 +196,9 @@ open class MenuConfiguration: Configuration {
 
     open var menuItemHoverImageTintColor: NSColor? {
         return .white
+    }
+
+    open var menuItemHoverAnimationDuration: TimeInterval {
+        return 0.15
     }
 }

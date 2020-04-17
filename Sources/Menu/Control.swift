@@ -11,10 +11,12 @@ class Control: NSControl {
     var hover: ((Bool) -> Void)?
 
     private let hoverLayer = CAShapeLayer()
-    private let configuratuon: Configuration
+    private let hoverColor: NSColor
+    private let hoverAnimationDuration: TimeInterval
 
     init(with configuration: Configuration) {
-        self.configuratuon = configuration
+        self.hoverColor = configuration.menuItemHoverBackgroundColor
+        self.hoverAnimationDuration = configuration.menuItemHoverAnimationDuration
 
         super.init(frame: .zero)
         wantsLayer = true
@@ -49,18 +51,29 @@ class Control: NSControl {
 
     override func mouseEntered(with event: NSEvent) {
         guard isEnabled else { return }
-        hoverLayer.fillColor = configuratuon.menuItemHoverBackgroundColor.cgColor
+        animateFillColor(from: .clear, to: hoverColor)
         hover?(true)
     }
 
     override func mouseExited(with event: NSEvent) {
         guard isEnabled else { return }
-        hoverLayer.fillColor = .clear
+        animateFillColor(from: hoverColor, to: .clear)
         hover?(false)
     }
 
     override func draw(_ dirtyRect: NSRect) {
         NSColor.clear.setFill()
         NSBezierPath(rect: bounds).fill()
+    }
+
+    private func animateFillColor(from oldColor: NSColor, to newColor: NSColor) {
+        let animation = CABasicAnimation(keyPath: "fillColor")
+        animation.duration = hoverAnimationDuration
+        animation.fromValue = oldColor.cgColor
+        animation.toValue = newColor.cgColor
+        animation.fillMode = .both
+        animation.timingFunction = .easeInEaseOut
+        animation.isRemovedOnCompletion = false
+        hoverLayer.add(animation, forKey: "fillColor")
     }
 }

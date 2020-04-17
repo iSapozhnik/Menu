@@ -36,11 +36,11 @@ public final class Menu {
     }
 
     // MARK: - Show and dismiss
-    public func show(from view: NSView) {
-        show(items, from: view)
+    public func show(from view: NSView, animated: Bool = true) {
+        show(items, from: view, animated: animated)
     }
 
-    public func dismiss(animated: Bool) {
+    public func dismiss(animated: Bool = true) {
         let actualDismiss: (NSWindow) -> Void = { [weak self] menuWindow in
             self?.window?.parent?.removeChildWindow(menuWindow)
             self?.window?.orderOut(self)
@@ -119,10 +119,8 @@ public final class Menu {
     }
 
     // MARK: - Private
-    private func show(_ items: [MenuItem], from view: NSView) {
+    private func show(_ items: [MenuItem], from view: NSView, animated: Bool) {
         guard window == nil, let parentWindow = view.window else { return }
-
-        self.items = items
 
         let menuWindow = makeWindow(
             with: title,
@@ -134,14 +132,18 @@ public final class Menu {
 
         setupMonitors(for: parentWindow, targetView: view)
 
-        fadeIn(menuWindow)
+        if animated {
+            fadeIn(menuWindow)
+        } else {
+            menuWindow.alphaValue = 1.0
+        }
     }
 
     private func fadeIn(_ window: NSWindow) {
         window.alphaValue = 0.0
 
         NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.15
+            context.duration = configuration.animationDuration
             context.timingFunction = CAMediaTimingFunction(name: .easeIn)
             window.animator().alphaValue = 1.0
         }
@@ -149,7 +151,7 @@ public final class Menu {
 
     private func fadeOut(window: NSWindow, completion: @escaping () -> Void) {
         NSAnimationContext.runAnimationGroup ({ context in
-            context.duration = 0.15
+            context.duration = configuration.animationDuration
             context.timingFunction = CAMediaTimingFunction(name: .easeOut)
             window.animator().alphaValue = 0.0
         }, completionHandler: {
