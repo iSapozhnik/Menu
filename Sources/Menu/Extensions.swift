@@ -172,10 +172,6 @@ extension NSEdgeInsets {
     static let zero = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 }
 
-extension Int {
-    static let defaultSelectedIndex = -1
-}
-
 extension CGFloat {
     /// 0 points
     public static let grid0: CGFloat = 0.0

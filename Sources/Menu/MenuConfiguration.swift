@@ -49,11 +49,14 @@ extension Padding.Vertical {
 public protocol Configuration {
     var titleBottomSpace: CGFloat                           { get }
     var titleFont: NSFont?                                  { get }
+    var titleColor: NSColor                                 { get }
     var backgroundColor: NSColor                            { get }
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
+    var maximumContentHeight: CGFloat?                      { get }
     var separatorColor: NSColor                             { get }
     var separatorThickness: CGFloat                         { get }
     var separatorHorizontalPadding: Padding.Horizontal      { get }
@@ -73,6 +76,7 @@ public protocol Configuration {
     var menuItemImageHeight: CGFloat?                       { get }
     var menuItemImageTintColor: NSColor?                    { get }
     var menuItemHoverImageTintColor: NSColor?               { get }
+    var menuItemHoverAnimationDuration: TimeInterval        { get }
 }
 
 open class MenuConfiguration: Configuration {
@@ -84,6 +88,10 @@ open class MenuConfiguration: Configuration {
 
     open var titleFont: NSFont? {
         return NSFont.systemFont(ofSize: 18, weight: .light)
+    }
+
+    open var titleColor: NSColor {
+        return NSColor.white
     }
 
     open var backgroundColor: NSColor {
@@ -102,8 +110,16 @@ open class MenuConfiguration: Configuration {
         return true
     }
 
+    open var animationDuration: TimeInterval {
+        return 0.15
+    }
+
     open var contentEdgeInsets: NSEdgeInsets {
         return NSEdgeInsets(top: .grid2, left: .grid2, bottom: .grid2, right: .grid2)
+    }
+
+    open var maximumContentHeight: CGFloat? {
+        return nil
     }
 
     open var separatorColor: NSColor {
@@ -180,5 +196,9 @@ open class MenuConfiguration: Configuration {
 
     open var menuItemHoverImageTintColor: NSColor? {
         return .white
+    }
+
+    open var menuItemHoverAnimationDuration: TimeInterval {
+        return 0.15
     }
 }

@@ -11,12 +11,16 @@ class Control: NSControl {
     var hover: ((Bool) -> Void)?
 
     private let hoverLayer = CAShapeLayer()
-    private let configuratuon: Configuration
+    private let hoverColor: NSColor
+    private let hoverAnimationDuration: TimeInterval
+    private var trackingArea: NSTrackingArea?
 
     init(with configuration: Configuration) {
-        self.configuratuon = configuration
+        self.hoverColor = configuration.menuItemHoverBackgroundColor
+        self.hoverAnimationDuration = configuration.menuItemHoverAnimationDuration
 
         super.init(frame: .zero)
+
         wantsLayer = true
 
         hoverLayer.fillColor = .clear
@@ -29,13 +33,22 @@ class Control: NSControl {
 
     override func layout() {
         super.layout()
-
-        addTrackingArea(NSTrackingArea.init(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil))
-
         hoverLayer.path = CGPath(rect: bounds, transform: nil)
+
+        if let trackingArea = trackingArea, trackingAreas.contains(trackingArea) {
+            removeTrackingArea(trackingArea)
+        }
+        createTrackingArea()
+    }
+
+    private func createTrackingArea() {
+        let newTrackingArea = NSTrackingArea.init(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(newTrackingArea)
+        trackingArea = newTrackingArea
     }
 
     override func mouseUp(with event: NSEvent) {
+        guard isEnabled else { return }
         if let action = action {
             hoverLayer.fillColor = .clear
             hover?(false)
@@ -47,17 +60,30 @@ class Control: NSControl {
     }
 
     override func mouseEntered(with event: NSEvent) {
-        hoverLayer.fillColor = configuratuon.menuItemHoverBackgroundColor.cgColor
+        guard isEnabled else { return }
+        animateFillColor(from: .clear, to: hoverColor)
         hover?(true)
     }
 
     override func mouseExited(with event: NSEvent) {
-        hoverLayer.fillColor = .clear
+        guard isEnabled else { return }
+        animateFillColor(from: hoverColor, to: .clear)
         hover?(false)
     }
 
     override func draw(_ dirtyRect: NSRect) {
         NSColor.clear.setFill()
         NSBezierPath(rect: bounds).fill()
+    }
+
+    private func animateFillColor(from oldColor: NSColor, to newColor: NSColor) {
+        let animation = CABasicAnimation(keyPath: "fillColor")
+        animation.duration = hoverAnimationDuration
+        animation.fromValue = oldColor.cgColor
+        animation.toValue = newColor.cgColor
+        animation.fillMode = .both
+        animation.timingFunction = .easeInEaseOut
+        animation.isRemovedOnCompletion = false
+        hoverLayer.add(animation, forKey: "fillColor")
     }
 }

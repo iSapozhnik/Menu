@@ -8,7 +8,7 @@
 import Cocoa
 
 protocol ContentViewControllerDelegate: AnyObject {
-    func didClickMenuElement(with index: Int)
+    func didClickMenuItem(withId id: UUID)
 }
 
 class ContentViewController: NSViewController {
@@ -19,7 +19,7 @@ class ContentViewController: NSViewController {
     private let configuration: Configuration
 
     private var menuElements = [NSView]()
-    private var slectedIndex: Int = .defaultSelectedIndex
+    private let selectedId: UUID?
 
     private let stackView: NSStackView = {
         let stackView = NSStackView()
@@ -29,10 +29,19 @@ class ContentViewController: NSViewController {
         return stackView
     }()
 
-    init(with titleString: String?, menuItems: [MenuItem], selectedIndex: Int, configuration: Configuration) {
+    private let clipView = FlippedClipView()
+
+    private let scrollView: ScrollView = {
+        let scrollView = ScrollView()
+        scrollView.verticalScroller = MenuScroller(withType: .vertical)
+        scrollView.drawsBackground = false
+        return scrollView
+    }()
+
+    init(with titleString: String?, menuItems: [MenuItem], selectedId: UUID?, configuration: Configuration) {
         self.titleString = titleString
         self.menuItems = menuItems
-        self.slectedIndex = selectedIndex
+        self.selectedId = selectedId
         self.configuration = configuration
         super.init(nibName: nil, bundle: nil)
     }
@@ -61,26 +70,43 @@ class ContentViewController: NSViewController {
             ])
         }
 
+        scrollView.isScrollingEnabled = configuration.maximumContentHeight != nil
+        scrollView.contentView = clipView
+        scrollView.documentView = stackView
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -configuration.contentEdgeInsets.bottom)
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -configuration.contentEdgeInsets.bottom),
+
+            stackView.leadingAnchor.constraint(equalTo: clipView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: clipView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: clipView.topAnchor),
+            stackView.widthAnchor.constraint(equalTo: clipView.widthAnchor),
         ])
 
-        if let titleLabel = titleLabel {
-            stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: configuration.titleBottomSpace).isActive = true
+        scrollView.hasVerticalScroller = configuration.maximumContentHeight != nil
+        if let maxContentHeight = configuration.maximumContentHeight {
+            scrollView.heightAnchor.constraint(equalToConstant: abs(maxContentHeight)).isActive = true
         } else {
-            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.contentEdgeInsets.top).isActive = true
+            stackView.bottomAnchor.constraint(equalTo: clipView.bottomAnchor).isActive = true
+        }
+
+        if let titleLabel = titleLabel {
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: configuration.titleBottomSpace).isActive = true
+        } else {
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor, constant: configuration.contentEdgeInsets.top).isActive = true
         }
 
         menuItems.enumerated().forEach { index, item in
             if item.isSeparator {
                 addSeparator()
             } else {
-                addMenuElement(with: item, isSelected: index == slectedIndex)
+                addMenuElement(with: item, isSelected: item.id == selectedId)
             }
         }
     }
@@ -114,8 +140,9 @@ class ContentViewController: NSViewController {
             text: menuItem.title,
             image: menuItem.image,
             isSelected: isSelected,
+            isEnabled: menuItem.isEnabled,
             configuration: configuration,
-            action: menuItem.action
+            action: menuItem.action ?? {}
         )
         menuElement.translatesAutoresizingMaskIntoConstraints = false
         menuElement.delegate = self
@@ -141,7 +168,7 @@ class ContentViewController: NSViewController {
         label.isEditable = false
         label.isBordered = false
         label.font = configuration.titleFont
-        label.textColor = configuration.menuItemTextColor
+        label.textColor = configuration.titleColor
         switch configuration.textAlignment {
         case .left:
             label.alignment = .left
@@ -154,8 +181,9 @@ class ContentViewController: NSViewController {
 
 extension ContentViewController: MenuElementDelegate {
     func didClickMenuElement(_ menuElement: MenuElement) {
-        let index = menuElements.firstIndex(of: menuElement)
-        slectedIndex = index ?? .defaultSelectedIndex
-        delegate?.didClickMenuElement(with: slectedIndex)
+        guard let index = menuElements.firstIndex(of: menuElement) else { return }
+        guard menuItems.indices.contains(index) else { return }
+        let selectedMenuItem = menuItems[index]
+        delegate?.didClickMenuItem(withId: selectedMenuItem.id)
     }
 }

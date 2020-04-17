@@ -17,11 +17,13 @@ class MenuElement: NSView {
     private let configuration: Configuration
     private var checkmark: CheckmarkView!
 
-    init(text: String, image: NSImage? = nil, isSelected: Bool = false, configuration: Configuration, action: @escaping () -> Void) {
+    init(text: String, image: NSImage? = nil, isSelected: Bool = false, isEnabled: Bool, configuration: Configuration, action: @escaping () -> Void) {
         self.configuration = configuration
         handler = action
 
         super.init(frame: .zero)
+
+        alphaValue = isEnabled ? 1.0 : 0.5
 
         let stackView = makeHorizontalStackView()
 
@@ -72,7 +74,7 @@ class MenuElement: NSView {
             checkmark = checkmarkView
         }
 
-        let control = makeHoverControl(update: label, leftImageView: lImageView, rightImageView: rImageView)
+        let control = makeHoverControl(update: label, leftImageView: lImageView, rightImageView: rImageView, isEnabled: isEnabled)
 
         addSubview(control)
         addSubview(stackView)
@@ -144,8 +146,7 @@ class MenuElement: NSView {
         rImageView.translatesAutoresizingMaskIntoConstraints = false
         rImageView.image = image
         if #available(OSX 10.14, *) {
-            if let menuItemImageTintColor = configuration.menuItemImageTintColor {
-                assert(image?.isTemplate ?? true, "In order to set an image tint color, the image should have template rendering mode")
+            if let menuItemImageTintColor = configuration.menuItemImageTintColor, let image = image, image.isTemplate {
                 rImageView.contentTintColor = menuItemImageTintColor
             }
         }
@@ -159,8 +160,7 @@ class MenuElement: NSView {
         lImageView.imageScaling = .scaleProportionallyUpOrDown
         lImageView.image = image
         if #available(OSX 10.14, *) {
-            if let menuItemImageTintColor = configuration.menuItemImageTintColor {
-                assert(image?.isTemplate ?? true, "In order to set an image tint color, the image should have template rendering mode")
+            if let menuItemImageTintColor = configuration.menuItemImageTintColor, let image = image, image.isTemplate {
                 lImageView.contentTintColor = menuItemImageTintColor
             }
         }
@@ -168,8 +168,9 @@ class MenuElement: NSView {
         return lImageView
     }
 
-    private func makeHoverControl(update label: NSTextField, leftImageView: NSImageView?, rightImageView: NSImageView?) -> Control {
+    private func makeHoverControl(update label: NSTextField, leftImageView: NSImageView?, rightImageView: NSImageView?, isEnabled: Bool) -> Control {
         let control = Control(with: configuration)
+        control.isEnabled = isEnabled
         control.hover = { [weak self] isHover in
             guard let self = self else { return }
             label.textColor = isHover ? self.configuration.menuItemHoverTextColor : self.configuration.menuItemTextColor
