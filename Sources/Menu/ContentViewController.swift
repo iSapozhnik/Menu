@@ -11,32 +11,6 @@ protocol ContentViewControllerDelegate: AnyObject {
     func didClickMenuItem(with id: UUID)
 }
 
-final class FlippedClipView: NSClipView {
-    override var isFlipped: Bool {
-        return true
-    }
-}
-
-//final class MenuScroller: NSScroller {
-//    override init(frame frameRect: NSRect) {
-//        super.init(frame: frameRect)
-//        scrollerStyle = .overlay
-//        knobStyle = .light
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//
-//    override class func scrollerWidth(for controlSize: NSControl.ControlSize, scrollerStyle: NSScroller.Style) -> CGFloat {
-//        return 30.0
-//    }
-//
-//    override var usableParts: NSScroller.UsableParts {
-//        return .noScrollerParts
-//    }
-//}
-
 class ContentViewController: NSViewController {
     weak var delegate: ContentViewControllerDelegate?
 
@@ -55,11 +29,7 @@ class ContentViewController: NSViewController {
         return stackView
     }()
 
-    private let clipView: FlippedClipView = {
-        let clipView = FlippedClipView()
-        clipView.drawsBackground = false
-        return clipView
-    }()
+    private let clipView = FlippedClipView()
 
     private let scrollView: ScrollView = {
         let scrollView = ScrollView()
