@@ -26,34 +26,32 @@ class MenuScroller: NSScroller {
 
     private var alpha: CGFloat = 0.0
     private var type: MenuScrollerType = .vertical
+    private var trackingArea: NSTrackingArea!
 
     init(withType scrollerType: MenuScrollerType) {
         type = scrollerType
         super.init(frame: .zero)
-        initialize()
+        commonInit()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        initialize()
+        commonInit()
     }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        initialize()
+        commonInit()
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        initialize()
+        commonInit()
     }
 
-    func initialize() {
-        let trackingArea = NSTrackingArea.init(rect: self.bounds,
-                                               options: [.mouseEnteredAndExited, .activeInActiveApp, .mouseMoved],
-                                               owner: self,
-                                               userInfo: nil)
-        self.addTrackingArea(trackingArea)
+    func commonInit() {
+        trackingArea = NSTrackingArea.init(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .mouseMoved], owner: self, userInfo: nil)
+        addTrackingArea(trackingArea)
     }
 
     @objc func fadeOut() {
@@ -78,6 +76,15 @@ class MenuScroller: NSScroller {
 
         let frame = rect(for: .knob).insetBy(dx: dx, dy: dy)
         NSBezierPath.init(roundedRect: frame, xRadius: 3, yRadius: 3).fill()
+    }
+
+    override func updateTrackingAreas() {
+        if trackingAreas.contains(trackingArea) {
+            removeTrackingArea(trackingArea)
+        }
+
+        trackingArea = NSTrackingArea.init(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp, .mouseMoved], owner: self, userInfo: nil)
+        addTrackingArea(trackingArea)
     }
 
     override func drawKnobSlot(in slotRect: NSRect, highlight flag: Bool) {

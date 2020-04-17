@@ -13,12 +13,14 @@ class Control: NSControl {
     private let hoverLayer = CAShapeLayer()
     private let hoverColor: NSColor
     private let hoverAnimationDuration: TimeInterval
+    private var trackingArea: NSTrackingArea?
 
     init(with configuration: Configuration) {
         self.hoverColor = configuration.menuItemHoverBackgroundColor
         self.hoverAnimationDuration = configuration.menuItemHoverAnimationDuration
 
         super.init(frame: .zero)
+
         wantsLayer = true
 
         hoverLayer.fillColor = .clear
@@ -31,10 +33,18 @@ class Control: NSControl {
 
     override func layout() {
         super.layout()
-
-        addTrackingArea(NSTrackingArea.init(rect: bounds, options: [.mouseEnteredAndExited, .activeAlways], owner: self, userInfo: nil))
-
         hoverLayer.path = CGPath(rect: bounds, transform: nil)
+
+        if let trackingArea = trackingArea, trackingAreas.contains(trackingArea) {
+            removeTrackingArea(trackingArea)
+        }
+        createTrackingArea()
+    }
+
+    private func createTrackingArea() {
+        let newTrackingArea = NSTrackingArea.init(rect: bounds, options: [.mouseEnteredAndExited, .activeInActiveApp], owner: self, userInfo: nil)
+        addTrackingArea(newTrackingArea)
+        trackingArea = newTrackingArea
     }
 
     override func mouseUp(with event: NSEvent) {
