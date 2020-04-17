@@ -1,6 +1,6 @@
 # Menu
 
-Fully customizable Mac OS drop-down menu. It includes **30** settings you can play with.
+>Fully customizable Mac OS drop-down menu. It includes **30** settings you can play with.
 
 ![](screenshot1.png)
 
