@@ -7,39 +7,45 @@
 
 import Cocoa
 
+enum MenuScrollerType {
+    case horizontal
+    case vertical
+}
+
 class MenuScroller: NSScroller {
-
-    // MARK: -
-    // MARK: Variables
-
     override var floatValue: Float {
         get {
             return super.floatValue
         }
         set {
             super.floatValue = newValue
-            animator().alphaValue = 1.0
-            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(fadeOut), object: nil)
-            perform(#selector(fadeOut), with: nil, afterDelay: 1.0)
+            updateAlpha(1.0, animated: true)
+            rescheduleFadeOut()
         }
     }
 
-    // MARK: -
-    // MARK: Initialization
+    private var alpha: CGFloat = 0.0
+    private var type: MenuScrollerType = .vertical
+
+    init(withType scrollerType: MenuScrollerType) {
+        type = scrollerType
+        super.init(frame: .zero)
+        initialize()
+    }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.initialize()
+        initialize()
     }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        self.initialize()
+        initialize()
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.initialize()
+        initialize()
     }
 
     func initialize() {
@@ -50,52 +56,35 @@ class MenuScroller: NSScroller {
         self.addTrackingArea(trackingArea)
     }
 
-    // MARK: -
-    // MARK: Custom Methods
-
     @objc func fadeOut() {
-        NSAnimationContext.runAnimationGroup({ (context) in
-            context.duration = 0.25
-            self.animator().alphaValue = 0.3
-        }) {}
+        updateAlpha(0.3, animated: true, anumationDuration: 0.25)
     }
 
-    // MARK: -
-    // MARK: NSView Method Overrides
-
     override func draw(_ dirtyRect: NSRect) {
-        // Only draw the knob. drawRect: should only be invoked when overlay scrollers are not used
         self.drawKnob()
         self.drawKnobSlot(in: bounds, highlight: false)
     }
-
-    // MARK: -
-    // MARK: - NSScroller Method Overrides
 
     override func drawKnob() {
         NSColor.white.setFill()
 
         let dx, dy: CGFloat
-//        if isHorizontal {
-//            dx = 0; dy = 3
-//        } else {
+        switch type {
+        case .horizontal:
+            dx = 0; dy = 3
+        case .vertical:
             dx = 5; dy = 0
-//        }
+        }
 
         let frame = rect(for: .knob).insetBy(dx: dx, dy: dy)
         NSBezierPath.init(roundedRect: frame, xRadius: 3, yRadius: 3).fill()
     }
 
     override func drawKnobSlot(in slotRect: NSRect, highlight flag: Bool) {
-        // Don't draw the background. Should only be invoked when using overlay scrollers
         NSColor.init(white: 1.0, alpha: 0.15).setFill()
         let frame = rect(for: .knobSlot).insetBy(dx: 3, dy: 0)
         NSBezierPath.init(roundedRect: frame, xRadius: 5, yRadius: 5).fill()
-
     }
-
-    // MARK: -
-    // MARK: NSResponder Method Overrides
 
     override func mouseExited(with event: NSEvent) {
         super.mouseExited(with: event)
@@ -104,15 +93,35 @@ class MenuScroller: NSScroller {
 
     override func mouseEntered(with event: NSEvent) {
         super.mouseEntered(with: event)
-        NSAnimationContext.runAnimationGroup({ (context) in
-            context.duration = 0.1
-            self.animator().alphaValue = 1.0
-        }) {}
-        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.fadeOut), object: nil)
+        updateAlpha(1.0, animated: true)
+        cancelPreviuousFadeOut()
     }
 
     override func mouseMoved(with event: NSEvent) {
         super.mouseMoved(with: event)
-        self.alphaValue = 1.0 //TODO prevent multiple calls
+        updateAlpha(1.0, animated: false)
+    }
+
+    private func rescheduleFadeOut() {
+        cancelPreviuousFadeOut()
+        perform(#selector(fadeOut), with: nil, afterDelay: 1.0)
+    }
+
+    private func cancelPreviuousFadeOut() {
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(fadeOut), object: nil)
+    }
+
+    private func updateAlpha(_ newAlpha: CGFloat, animated: Bool, anumationDuration duration: TimeInterval = 0.1) {
+        guard alpha != newAlpha else { return }
+
+        alpha = newAlpha
+        if animated {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = duration
+                animator().alphaValue = newAlpha
+            }
+        } else {
+            alphaValue = newAlpha
+        }
     }
 }

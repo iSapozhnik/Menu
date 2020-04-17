@@ -33,7 +33,7 @@ class ContentViewController: NSViewController {
 
     private let scrollView: ScrollView = {
         let scrollView = ScrollView()
-        scrollView.verticalScroller = MenuScroller(frame: .zero)
+        scrollView.verticalScroller = MenuScroller(withType: .vertical)
         scrollView.drawsBackground = false
         return scrollView
     }()
