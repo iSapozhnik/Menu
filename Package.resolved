@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "EventMonitor",
+        "repositoryURL": "https://github.com/iSapozhnik/EventMonitor",
+        "state": {
+          "branch": null,
+          "revision": "bdc9ef02a3ab465af9b8eb932459fa5517eaf1d5",
+          "version": "1.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
