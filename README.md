@@ -10,7 +10,7 @@ Fully customizable Mac OS drop-down menu. It includes **30** settings you can pl
 * Mac OS 10.12+
 * Swift 5.0 and higher
 
-# Installation
+## Installation
 
 Since this is a Swift Package, the installation process is pretty stright forward.
 
