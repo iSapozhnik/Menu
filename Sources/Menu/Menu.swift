@@ -13,6 +13,9 @@ public final class Menu {
     public var numberOfItems: Int {
         return items.count
     }
+    public var selectedItem: MenuItem? {
+        return items.first { $0.id == selectedId }
+    }
 
     private var window: Window?
     private var lostFocusObserver: Any?
@@ -215,7 +218,7 @@ public final class Menu {
 }
 
 extension Menu: ContentViewControllerDelegate {
-    func didClickMenuItem(with id: UUID) {
+    func didClickMenuItem(withId id: UUID) {
         selectedId = id
         dismiss(animated: true)
     }

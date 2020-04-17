@@ -8,7 +8,7 @@
 import Cocoa
 
 protocol ContentViewControllerDelegate: AnyObject {
-    func didClickMenuItem(with id: UUID)
+    func didClickMenuItem(withId id: UUID)
 }
 
 class ContentViewController: NSViewController {
@@ -82,7 +82,6 @@ class ContentViewController: NSViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -configuration.contentEdgeInsets.bottom),
-//            scrollView.heightAnchor.constraint(equalToConstant: 200),
 
             stackView.leadingAnchor.constraint(equalTo: clipView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: clipView.trailingAnchor),
@@ -183,8 +182,8 @@ class ContentViewController: NSViewController {
 extension ContentViewController: MenuElementDelegate {
     func didClickMenuElement(_ menuElement: MenuElement) {
         guard let index = menuElements.firstIndex(of: menuElement) else { return }
-        guard index <= menuItems.count - 1 else { return }
+        guard menuItems.indices.contains(index) else { return }
         let selectedMenuItem = menuItems[index]
-        delegate?.didClickMenuItem(with: selectedMenuItem.id)
+        delegate?.didClickMenuItem(withId: selectedMenuItem.id)
     }
 }
