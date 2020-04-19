@@ -127,7 +127,7 @@ class ViewController: NSViewController {
 
 ## Examples
 
-In this section I've collected some examples of what can be i,plemented do using **Menu** control. On the left side some random example from Dribbble and on the right side my implementation.
+In this section I've collected some examples of what can be implemented by using **Menu** control. On the left side some random examples from Dribbble and on the right side there is my implementation.
 
 | Dribbble      | Menu          |
 | ------------- |:-------------:|
