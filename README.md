@@ -1,5 +1,13 @@
 # Menu
 
+<div align="center">
+
+![Swift](https://img.shields.io/badge/%20in-swift%205.0-orange.svg)
+![macOS](https://img.shields.io/badge/macOS-10.12-green.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+</div>
+
 >Fully customizable macOS drop-down menu. It includes **30** settings you can play with.
 
 ![](screenshot2.png)
@@ -140,4 +148,5 @@ Released under the MIT License. See `LICENSE` for details.
 https://dribbble.com/shots/4953294-Daily-UI-Challenge-04-Dropdown-Menu
 https://dribbble.com/shots/7055473-Dropdowns
 -->
+
 
