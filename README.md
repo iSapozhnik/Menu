@@ -132,7 +132,7 @@ In this section I've collected some examples of what can be i,plemented do using
 | Dribbble      | Menu          |
 | ------------- |:-------------:|
 | [link](https://dribbble.com/shots/4233782-Snooze-notifications-in-Twist) | |
-| ![](examples/twist.png)     | ![](examples/menu_twist.png) |
+| ![](examples/twist.png)     | ![](examples/example_twist.png) |
 
 ## Credits
 
