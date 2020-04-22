@@ -74,6 +74,7 @@ public protocol Configuration {
     var menuItemHoverCheckmarkColor: NSColor                { get }
     var menuItemCheckmarkHeight: CGFloat                    { get }
     var menuItemCheckmarkThikness: CGFloat                  { get }
+    var menuItemHorizontalSpacing: CGFloat                  { get }
     var menuItemImageHeight: CGFloat?                       { get }
     var menuItemImageTintColor: NSColor?                    { get }
     var menuItemHoverImageTintColor: NSColor?               { get }
@@ -189,6 +190,10 @@ open class MenuConfiguration: Configuration {
 
     open var menuItemCheckmarkThikness: CGFloat {
         return 1.0
+    }
+
+    open var menuItemHorizontalSpacing: CGFloat {
+        return .grid1
     }
 
     open var menuItemImageHeight: CGFloat? {

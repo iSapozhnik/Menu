@@ -151,7 +151,7 @@ class MenuElement: NSView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.orientation = .horizontal
         stackView.distribution = .fill
-        stackView.spacing = .grid1
+        stackView.spacing = configuration.menuItemHorizontalSpacing
         return stackView
     }
 
