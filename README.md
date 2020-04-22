@@ -27,7 +27,7 @@ Update your `Package.swift` dependencies:
 
 ```
 dependencies: [
-    .package(url: "https://github.com/iSapozhnik/Menu", from: "1.0.8")
+    .package(url: "https://github.com/iSapozhnik/Menu", from: "1.10.0")
 ]
 ```
 
@@ -47,6 +47,7 @@ public protocol Configuration {
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var presentingOffset: CGFloat                           { get }
     var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var maximumContentHeight: CGFloat?                      { get }
