@@ -30,7 +30,8 @@ class Control: NSControl {
 
     override func layout() {
         super.layout()
-        hoverLayer.path = CGPath(roundedRect: bounds, cornerWidth: configuration.menuItemHoverCornerRadius, cornerHeight: configuration.menuItemHoverCornerRadius, transform: nil)
+        let newRect = bounds.inset(by: configuration.menuItemHoverEdgeInsets)
+        hoverLayer.path = CGPath(roundedRect: newRect, cornerWidth: configuration.menuItemHoverCornerRadius, cornerHeight: configuration.menuItemHoverCornerRadius, transform: nil)
 
         if let trackingArea = trackingArea, trackingAreas.contains(trackingArea) {
             removeTrackingArea(trackingArea)

@@ -190,3 +190,14 @@ extension CGFloat {
     /// 48 points
     static let grid6: CGFloat = 48.0
 }
+
+extension NSRect {
+    func inset(by insets: NSEdgeInsets) -> NSRect {
+        var newRect = self
+        newRect.origin.x += insets.left
+        newRect.size.width -= insets.left + insets.right
+        newRect.origin.y += insets.top
+        newRect.size.height -= insets.top + insets.bottom
+        return newRect
+    }
+}
