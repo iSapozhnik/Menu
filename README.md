@@ -27,7 +27,7 @@ Update your `Package.swift` dependencies:
 
 ```
 dependencies: [
-    .package(url: "https://github.com/iSapozhnik/Menu", from: "1.10.0")
+    .package(url: "https://github.com/iSapozhnik/Menu", from: "1.10.1")
 ]
 ```
 
@@ -67,6 +67,7 @@ public protocol Configuration {
     var menuItemHoverCheckmarkColor: NSColor                { get }
     var menuItemCheckmarkHeight: CGFloat                    { get }
     var menuItemCheckmarkThikness: CGFloat                  { get }
+    var menuItemHorizontalSpacing: CGFloat                  { get }
     var menuItemImageHeight: CGFloat?                       { get }
     var menuItemImageTintColor: NSColor?                    { get }
     var menuItemHoverImageTintColor: NSColor?               { get }
