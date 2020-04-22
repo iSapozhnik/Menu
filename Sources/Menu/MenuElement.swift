@@ -17,18 +17,58 @@ class MenuElement: NSView {
     private let configuration: Configuration
     private var checkmark: CheckmarkView!
 
-    init(text: String, image: NSImage? = nil, isSelected: Bool = false, isEnabled: Bool, configuration: Configuration, action: @escaping () -> Void) {
+    init(with menuItem: MenuItem, isSelected: Bool = false, configuration: Configuration) {
         self.configuration = configuration
-        handler = action
+        handler = menuItem.action ?? {}
 
         super.init(frame: .zero)
 
-        alphaValue = isEnabled ? 1.0 : 0.5
+        alphaValue = menuItem.isEnabled ? 1.0 : 0.5
 
+        if let customView = menuItem.customView {
+            makeCustomViewElement(with: customView)
+        } else {
+            makeStandardElement(with: menuItem, isSelected: isSelected)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func menuElementClicked(_ sender: Control) {
+        handler()
+        delegate?.didClickMenuElement(self)
+    }
+
+    private func makeCustomViewElement(with customView: NSView) {
+        customView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(customView)
+
+        let leadingConstraint: NSLayoutConstraint
+        let trailingConstraint: NSLayoutConstraint
+        switch configuration.textAlignment {
+        case .left:
+            leadingConstraint = customView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: configuration.contentEdgeInsets.left)
+            trailingConstraint = customView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -configuration.contentEdgeInsets.right)
+        case .right:
+            leadingConstraint = customView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: configuration.contentEdgeInsets.left)
+            trailingConstraint = customView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -configuration.contentEdgeInsets.right)
+        }
+        NSLayoutConstraint.activate([
+            leadingConstraint,
+            trailingConstraint,
+            customView.topAnchor.constraint(equalTo: topAnchor),
+            customView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    private func makeStandardElement(with menuItem: MenuItem, isSelected: Bool) {
         let stackView = makeHorizontalStackView()
 
         var lImageView: NSImageView? = nil
         var rImageView: NSImageView? = nil
+        let image = menuItem.image
         switch configuration.iconAlignment {
         case .left:
             lImageView = makeLeftImageView(with: image)
@@ -36,7 +76,7 @@ class MenuElement: NSView {
             rImageView = makeRightImageView(with: image)
         }
 
-        let label = makeLabel(with: text)
+        let label = makeLabel(with: menuItem.title)
 
         if let lImageView = lImageView {
             stackView.addArrangedSubview(lImageView)
@@ -70,11 +110,15 @@ class MenuElement: NSView {
 
             if isSelected {
                 checkmarkView.animate(duration: 0)
+                if #available(OSX 10.14, *) {
+                    lImageView?.contentTintColor = isSelected ? configuration.menuItemHoverImageTintColor : configuration.menuItemImageTintColor
+                }
+                label.textColor = isSelected ? configuration.menuItemHoverTextColor : configuration.menuItemTextColor
             }
             checkmark = checkmarkView
         }
 
-        let control = makeHoverControl(update: label, leftImageView: lImageView, rightImageView: rImageView, isEnabled: isEnabled)
+        let control = makeHoverControl(update: label, leftImageView: lImageView, rightImageView: rImageView, isEnabled: menuItem.isEnabled, isSelected: isSelected)
 
         addSubview(control)
         addSubview(stackView)
@@ -100,15 +144,6 @@ class MenuElement: NSView {
                 checkmarkView.widthAnchor.constraint(equalToConstant: configuration.menuItemCheckmarkHeight)
             ])
         }
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    @objc private func menuElementClicked(_ sender: Control) {
-        handler()
-        delegate?.didClickMenuElement(self)
     }
 
     private func makeHorizontalStackView() -> NSStackView {
@@ -168,15 +203,15 @@ class MenuElement: NSView {
         return lImageView
     }
 
-    private func makeHoverControl(update label: NSTextField, leftImageView: NSImageView?, rightImageView: NSImageView?, isEnabled: Bool) -> Control {
+    private func makeHoverControl(update label: NSTextField, leftImageView: NSImageView?, rightImageView: NSImageView?, isEnabled: Bool, isSelected: Bool) -> Control {
         let control = Control(with: configuration)
         control.isEnabled = isEnabled
         control.hover = { [weak self] isHover in
             guard let self = self else { return }
-            label.textColor = isHover ? self.configuration.menuItemHoverTextColor : self.configuration.menuItemTextColor
+            label.textColor = isHover ? self.configuration.menuItemHoverTextColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemTextColor
             if #available(OSX 10.14, *) {
-                leftImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
-                rightImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+                leftImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+                rightImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
             }
         }
 

@@ -54,6 +54,7 @@ public protocol Configuration {
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var presentingOffset: CGFloat                           { get }
     var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var maximumContentHeight: CGFloat?                      { get }
@@ -108,6 +109,10 @@ open class MenuConfiguration: Configuration {
 
     open var appearsBelowSender: Bool {
         return true
+    }
+
+    open var presentingOffset: CGFloat {
+        return 0.0
     }
 
     open var animationDuration: TimeInterval {
