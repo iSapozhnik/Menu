@@ -71,6 +71,7 @@ public protocol Configuration {
     var menuItemTextColor: NSColor                          { get }
     var menuItemHoverTextColor: NSColor                     { get }
     var menuItemHoverCornerRadius: CGFloat                  { get }
+    var menuItemHoverEdgeInsets: NSEdgeInsets               { get }
     var menuItemCheckmarkColor: NSColor                     { get }
     var menuItemHoverCheckmarkColor: NSColor                { get }
     var menuItemCheckmarkHeight: CGFloat                    { get }
@@ -171,6 +172,10 @@ open class MenuConfiguration: Configuration {
 
     open var menuItemHoverTextColor: NSColor {
         return .white
+    }
+
+    open var menuItemHoverEdgeInsets: NSEdgeInsets {
+        return NSEdgeInsets.zero
     }
 
     open var menuItemHoverCornerRadius: CGFloat {
