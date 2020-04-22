@@ -11,14 +11,11 @@ class Control: NSControl {
     var hover: ((Bool) -> Void)?
 
     private let hoverLayer = CAShapeLayer()
-    private let hoverColor: NSColor
-    private let hoverAnimationDuration: TimeInterval
     private var trackingArea: NSTrackingArea?
+    private let configuration: Configuration
 
     init(with configuration: Configuration) {
-        self.hoverColor = configuration.menuItemHoverBackgroundColor
-        self.hoverAnimationDuration = configuration.menuItemHoverAnimationDuration
-
+        self.configuration = configuration
         super.init(frame: .zero)
 
         wantsLayer = true
@@ -33,7 +30,7 @@ class Control: NSControl {
 
     override func layout() {
         super.layout()
-        hoverLayer.path = CGPath(rect: bounds, transform: nil)
+        hoverLayer.path = CGPath(roundedRect: bounds, cornerWidth: configuration.menuItemHoverCornerRadius, cornerHeight: configuration.menuItemHoverCornerRadius, transform: nil)
 
         if let trackingArea = trackingArea, trackingAreas.contains(trackingArea) {
             removeTrackingArea(trackingArea)
@@ -61,13 +58,13 @@ class Control: NSControl {
 
     override func mouseEntered(with event: NSEvent) {
         guard isEnabled else { return }
-        animateFillColor(from: .clear, to: hoverColor)
+        animateFillColor(from: .clear, to: configuration.menuItemHoverBackgroundColor)
         hover?(true)
     }
 
     override func mouseExited(with event: NSEvent) {
         guard isEnabled else { return }
-        animateFillColor(from: hoverColor, to: .clear)
+        animateFillColor(from: configuration.menuItemHoverBackgroundColor, to: .clear)
         hover?(false)
     }
 
@@ -78,7 +75,7 @@ class Control: NSControl {
 
     private func animateFillColor(from oldColor: NSColor, to newColor: NSColor) {
         let animation = CABasicAnimation(keyPath: "fillColor")
-        animation.duration = hoverAnimationDuration
+        animation.duration = configuration.menuItemHoverAnimationDuration
         animation.fromValue = oldColor.cgColor
         animation.toValue = newColor.cgColor
         animation.fillMode = .both

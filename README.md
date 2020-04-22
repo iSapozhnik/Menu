@@ -63,6 +63,7 @@ public protocol Configuration {
     var menuItemHoverBackgroundColor: NSColor               { get }
     var menuItemTextColor: NSColor                          { get }
     var menuItemHoverTextColor: NSColor                     { get }
+    var menuItemHoverCornerRadius: CGFloat                  { get }
     var menuItemCheckmarkColor: NSColor                     { get }
     var menuItemHoverCheckmarkColor: NSColor                { get }
     var menuItemCheckmarkHeight: CGFloat                    { get }
