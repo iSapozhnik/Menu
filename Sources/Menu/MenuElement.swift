@@ -70,11 +70,15 @@ class MenuElement: NSView {
 
             if isSelected {
                 checkmarkView.animate(duration: 0)
+                if #available(OSX 10.14, *) {
+                    lImageView?.contentTintColor = isSelected ? configuration.menuItemHoverImageTintColor : configuration.menuItemImageTintColor
+                }
+                label.textColor = isSelected ? configuration.menuItemHoverTextColor : configuration.menuItemTextColor
             }
             checkmark = checkmarkView
         }
 
-        let control = makeHoverControl(update: label, leftImageView: lImageView, rightImageView: rImageView, isEnabled: isEnabled)
+        let control = makeHoverControl(update: label, leftImageView: lImageView, rightImageView: rImageView, isEnabled: isEnabled, isSelected: isSelected)
 
         addSubview(control)
         addSubview(stackView)
@@ -168,15 +172,15 @@ class MenuElement: NSView {
         return lImageView
     }
 
-    private func makeHoverControl(update label: NSTextField, leftImageView: NSImageView?, rightImageView: NSImageView?, isEnabled: Bool) -> Control {
+    private func makeHoverControl(update label: NSTextField, leftImageView: NSImageView?, rightImageView: NSImageView?, isEnabled: Bool, isSelected: Bool) -> Control {
         let control = Control(with: configuration)
         control.isEnabled = isEnabled
         control.hover = { [weak self] isHover in
             guard let self = self else { return }
-            label.textColor = isHover ? self.configuration.menuItemHoverTextColor : self.configuration.menuItemTextColor
+            label.textColor = isHover ? self.configuration.menuItemHoverTextColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemTextColor
             if #available(OSX 10.14, *) {
-                leftImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
-                rightImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+                leftImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+                rightImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
             }
         }
 
