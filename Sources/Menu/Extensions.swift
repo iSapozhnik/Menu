@@ -174,19 +174,19 @@ extension NSEdgeInsets {
 
 extension CGFloat {
     /// 0 points
-    public static let grid0: CGFloat = 0.0
+    static let grid0: CGFloat = 0.0
     /// 4 points
-    public static let gridHalf: CGFloat = 4.0
+    static let gridHalf: CGFloat = 4.0
     /// 8 points
-    public static let grid1: CGFloat = 8.0
+    static let grid1: CGFloat = 8.0
     /// 16 points
-    public static let grid2: CGFloat = 16.0
+    static let grid2: CGFloat = 16.0
     /// 24 points
-    public static let grid3: CGFloat = 24.0
+    static let grid3: CGFloat = 24.0
     /// 32 points
-    public static let grid4: CGFloat = 32.0
+    static let grid4: CGFloat = 32.0
     /// 40 points
-    public static let grid5: CGFloat = 40.0
+    static let grid5: CGFloat = 40.0
     /// 48 points
-    public static let grid6: CGFloat = 48.0
+    static let grid6: CGFloat = 48.0
 }
