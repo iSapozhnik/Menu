@@ -136,14 +136,7 @@ class ContentViewController: NSViewController {
     }
 
     private func addMenuElement(with menuItem: MenuItem, isSelected: Bool) {
-        let menuElement = MenuElement(
-            text: menuItem.title,
-            image: menuItem.image,
-            isSelected: isSelected,
-            isEnabled: menuItem.isEnabled,
-            configuration: configuration,
-            action: menuItem.action ?? {}
-        )
+        let menuElement = MenuElement(with: menuItem, isSelected: isSelected, configuration: configuration)
         menuElement.translatesAutoresizingMaskIntoConstraints = false
         menuElement.delegate = self
         menuElement.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
