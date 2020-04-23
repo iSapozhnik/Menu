@@ -136,7 +136,7 @@ In this section I've collected some examples of what can be i,plemented do using
 | [link](https://dribbble.com/shots/4233782-Snooze-notifications-in-Twist) | |
 | ![](examples/twist.png)     | ![](examples/menu_twist.png) | |
 | [link](https://dribbble.com/shots/7055473-Dropdowns) | | |
-| ![](examples/example_0.png) | ![](examples/menu_0.png) | [code](examples/example.md) |
+| ![](examples/example_0.png) | ![](examples/menu_0.png) | [code](examples/examples.md) |
 
 ## Credits
 
