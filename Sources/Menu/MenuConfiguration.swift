@@ -54,6 +54,7 @@ public protocol Configuration {
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var presentingOffset: CGFloat                           { get }
     var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var maximumContentHeight: CGFloat?                      { get }
@@ -73,6 +74,7 @@ public protocol Configuration {
     var menuItemHoverCheckmarkColor: NSColor                { get }
     var menuItemCheckmarkHeight: CGFloat                    { get }
     var menuItemCheckmarkThikness: CGFloat                  { get }
+    var menuItemHorizontalSpacing: CGFloat                  { get }
     var menuItemImageHeight: CGFloat?                       { get }
     var menuItemImageTintColor: NSColor?                    { get }
     var menuItemHoverImageTintColor: NSColor?               { get }
@@ -108,6 +110,10 @@ open class MenuConfiguration: Configuration {
 
     open var appearsBelowSender: Bool {
         return true
+    }
+
+    open var presentingOffset: CGFloat {
+        return 0.0
     }
 
     open var animationDuration: TimeInterval {
@@ -184,6 +190,10 @@ open class MenuConfiguration: Configuration {
 
     open var menuItemCheckmarkThikness: CGFloat {
         return 1.0
+    }
+
+    open var menuItemHorizontalSpacing: CGFloat {
+        return .grid1
     }
 
     open var menuItemImageHeight: CGFloat? {

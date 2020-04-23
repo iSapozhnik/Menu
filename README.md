@@ -1,8 +1,16 @@
 # Menu
 
+<div align="center">
+
+![Swift](https://img.shields.io/badge/%20in-swift%205.0-orange.svg)
+![macOS](https://img.shields.io/badge/macOS-10.12-green.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+</div>
+
 >Fully customizable macOS drop-down menu. It includes **30** settings you can play with.
 
-![](screenshot1.png)
+![](screenshot2.png)
 
 ## Requirements
 
@@ -19,7 +27,7 @@ Update your `Package.swift` dependencies:
 
 ```
 dependencies: [
-    .package(url: "https://github.com/iSapozhnik/Menu", from: "1.0.8")
+    .package(url: "https://github.com/iSapozhnik/Menu", from: "1.10.1")
 ]
 ```
 
@@ -39,6 +47,7 @@ public protocol Configuration {
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var presentingOffset: CGFloat                           { get }
     var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
     var maximumContentHeight: CGFloat?                      { get }
@@ -58,6 +67,7 @@ public protocol Configuration {
     var menuItemHoverCheckmarkColor: NSColor                { get }
     var menuItemCheckmarkHeight: CGFloat                    { get }
     var menuItemCheckmarkThikness: CGFloat                  { get }
+    var menuItemHorizontalSpacing: CGFloat                  { get }
     var menuItemImageHeight: CGFloat?                       { get }
     var menuItemImageTintColor: NSColor?                    { get }
     var menuItemHoverImageTintColor: NSColor?               { get }
@@ -140,40 +150,7 @@ Released under the MIT License. See `LICENSE` for details.
 
 <!--
 https://dribbble.com/shots/4953294-Daily-UI-Challenge-04-Dropdown-Menu
-
+https://dribbble.com/shots/7055473-Dropdowns
 -->
 
-<!--
-https://dribbble.com/shots/7055473-Dropdowns
-```
-class Config: MenuConfiguration {
-    override var cornerRadius: CGFloat {
-        return 15.0
-    }
-
-    override var backgroundColor: NSColor {
-        return NSColor(red: 63/255, green: 59/255, blue: 59/255, alpha: 1.0)
-    }
-
-    override var menuItemHoverBackgroundColor: NSColor {
-        return NSColor(red: 86/255, green: 81/255, blue: 81/255, alpha: 1.0)
-    }
-
-    override var menuItemHoverCornerRadius: CGFloat {
-        return 10
-    }
-
-    override var contentEdgeInsets: NSEdgeInsets {
-        return NSEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-    }
-
-    override var menuItemHeight: CGFloat {
-        return 40.0
-    }
-
-    override var menuItemHoverEdgeInsets: NSEdgeInsets {
-        return NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-    }
-}
-```-->
 

@@ -58,6 +58,13 @@ public final class Menu {
         }
     }
 
+    // MARK: - Selection
+    public func selectItem(at index: Int) {
+        guard let item = item(at: index) else { return }
+        selectedId = item.id
+        item.action?()
+    }
+
     // MARK: - Adding and Removing Menu Items
     public func insertItem(_ item: MenuItem, at index: Int) {
         items.insert(item, at: index)
@@ -208,13 +215,16 @@ public final class Menu {
     }
 
     private func setFrame(for window: NSWindow, relativeTo view: NSView) {
-        guard let parentWindow = view.window else { return }
+        guard let parentWindow = view.window, let topMostSuperView = parentWindow.contentView else { return }
 
-        let presentationFrame = parentWindow.convertToScreen(view.frame)
-        let presentationPoint = presentationFrame.origin
-        let additionalYOffset = configuration.appearsBelowSender ? 0 : NSHeight(view.frame)
+        let locationInWindow = view.convert(topMostSuperView.frame.origin, to: nil)
+        let rectInWindow = NSRect(origin: locationInWindow, size: CGSize(width: NSWidth(view.frame), height: NSHeight(window.frame)))
+        let rectInScreen = parentWindow.convertToScreen(rectInWindow)
+        let origin = rectInScreen.origin
+        var additionalYOffset = configuration.appearsBelowSender ? NSHeight(view.frame) : 0
+        additionalYOffset += abs(configuration.presentingOffset)
+        let newFrame = NSRect(x: origin.x, y: origin.y - NSHeight(window.frame) - additionalYOffset, width: NSWidth(view.frame), height: NSHeight(window.frame))
 
-        let newFrame = NSRect(x: presentationPoint.x, y: presentationPoint.y - NSHeight(window.frame) + additionalYOffset, width: NSWidth(view.frame), height: NSHeight(window.frame))
         window.setFrame(newFrame, display: true, animate: false)
     }
 }
