@@ -1,13 +1,13 @@
 # Menu
 
->Fully customizable Mac OS drop-down menu. It includes **30** settings you can play with.
+>Fully customizable macOS drop-down menu. It includes **30** settings you can play with.
 
 ![](screenshot1.png)
 
 ## Requirements
 
 * Xcode 11+
-* Mac OS 10.12+
+* macOS 10.12+
 * Swift 5.0 and higher
 
 ## Installation
@@ -117,6 +117,17 @@ class ViewController: NSViewController {
 }
 ```
 
+## Examples
+
+In this section I've collected some examples of what can be i,plemented do using **Menu** control. On the left side some random example from Dribbble and on the right side my implementation.
+
+| Dribbble      | Menu          | Code          |
+| ------------- |:-------------:|:-------------:|
+| [link](https://dribbble.com/shots/4233782-Snooze-notifications-in-Twist) | |
+| ![](examples/twist.png)     | ![](examples/menu_twist.png) | |
+| [link](https://dribbble.com/shots/7055473-Dropdowns) | | |
+| ![](examples/example_0.png) | ![](examples/menu_0.png) | [code](examples/example.md) |
+
 ## Credits
 
 Created and maintained by [**@iSapozhnik**](https://twitter.com/iSapozhnik).
@@ -126,4 +137,43 @@ Created and maintained by [**@iSapozhnik**](https://twitter.com/iSapozhnik).
 Released under the MIT License. See `LICENSE` for details.
 
 >**Copyright &copy; 2020-present Sapozhnik Ivan.**
+
+<!--
+https://dribbble.com/shots/4953294-Daily-UI-Challenge-04-Dropdown-Menu
+
+-->
+
+<!--
+https://dribbble.com/shots/7055473-Dropdowns
+```
+class Config: MenuConfiguration {
+    override var cornerRadius: CGFloat {
+        return 15.0
+    }
+
+    override var backgroundColor: NSColor {
+        return NSColor(red: 63/255, green: 59/255, blue: 59/255, alpha: 1.0)
+    }
+
+    override var menuItemHoverBackgroundColor: NSColor {
+        return NSColor(red: 86/255, green: 81/255, blue: 81/255, alpha: 1.0)
+    }
+
+    override var menuItemHoverCornerRadius: CGFloat {
+        return 10
+    }
+
+    override var contentEdgeInsets: NSEdgeInsets {
+        return NSEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+    }
+
+    override var menuItemHeight: CGFloat {
+        return 40.0
+    }
+
+    override var menuItemHoverEdgeInsets: NSEdgeInsets {
+        return NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+    }
+}
+```-->
 
