@@ -208,10 +208,12 @@ class MenuElement: NSView {
         control.isEnabled = isEnabled
         control.hover = { [weak self] isHover in
             guard let self = self else { return }
-            label.textColor = isHover ? self.configuration.menuItemHoverTextColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemTextColor
-            if #available(OSX 10.14, *) {
-                leftImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
-                rightImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+            if self.configuration.rememberSelection {
+                label.textColor = isHover ? self.configuration.menuItemHoverTextColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemTextColor
+                if #available(OSX 10.14, *) {
+                    leftImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+                    rightImageView?.contentTintColor = isHover ? self.configuration.menuItemHoverImageTintColor : isSelected ? self.configuration.menuItemHoverImageTintColor : self.configuration.menuItemImageTintColor
+                }
             }
         }
 

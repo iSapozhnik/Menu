@@ -12,6 +12,13 @@ public enum Alignment {
     case right
 }
 
+public enum Position {
+    case leftBottom
+    case leftTop
+    case rightTop
+    case rightBottom
+}
+
 public enum Padding {
     public struct Horizontal {
         let left: CGFloat
@@ -54,6 +61,7 @@ public protocol Configuration {
     var cornerRadius: CGFloat                               { get }
     var hasShadow: Bool                                     { get }
     var appearsBelowSender: Bool                            { get }
+    var appearancePosition: Position                        { get }
     var presentingOffset: CGFloat                           { get }
     var animationDuration: TimeInterval                     { get }
     var contentEdgeInsets: NSEdgeInsets                     { get }
@@ -112,6 +120,10 @@ open class MenuConfiguration: Configuration {
 
     open var appearsBelowSender: Bool {
         return true
+    }
+
+    open var appearancePosition: Position {
+        return .rightBottom
     }
 
     open var presentingOffset: CGFloat {
