@@ -121,7 +121,7 @@ class ViewController: NSViewController {
         myMenu.addItems(menuItems)
     }
 
-    @IBAction func didClickedButton(_ sender: NSButton) {
+    @IBAction func didClickButton(_ sender: NSButton) {
         myMenu.show(from: sender)
     }
 }
