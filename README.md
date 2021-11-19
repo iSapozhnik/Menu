@@ -5,6 +5,7 @@
 ![Swift](https://img.shields.io/badge/%20in-swift%205.0-orange.svg)
 ![macOS](https://img.shields.io/badge/macOS-10.12-green.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FiSapozhnik%2FMenu%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/iSapozhnik/Menu)
 
 </div>
 
